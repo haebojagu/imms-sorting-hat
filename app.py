@@ -205,9 +205,6 @@ section[data-testid="stSidebar"] {
     border-right: 1px solid rgba(197,165,49,0.2) !important;
 }
 section[data-testid="stSidebar"] * { color: var(--text-primary) !important; }
-section[data-testid="stSidebar"] .stTextInput > div > div > input {
-    background: rgba(255,255,255,0.06) !important;
-}
 
 #MainMenu, footer, header { visibility: hidden; }
 .block-container { padding-top: 1rem !important; max-width: 860px !important; }
@@ -216,25 +213,20 @@ section[data-testid="stSidebar"] .stTextInput > div > div > input {
 
 
 # ──────────────────────────────────────────────────────────
-# 3. 사이드바 — API Key 입력
+# 3. 사이드바 — 모델 정보만 표시
 # ──────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("### 🔑 마법의 열쇠")
-    api_key = st.text_input(
-        "OpenAI API Key",
-        type="password",
-        placeholder="sk-...",
-        help="브라우저/서버에 저장되지 않습니다.",
-    )
-    st.markdown(
-        "<small style='color:#a89880;opacity:.7;'>🛡️ API Key는 이 세션에서만 사용됩니다.</small>",
-        unsafe_allow_html=True,
-    )
-    st.markdown("---")
+    st.markdown("### ⚙️ 모델 설정")
     st.markdown(
         "<small style='color:#a89880;'>**모델:** gpt-4o-mini<br>**온도:** 0.85<br>**최대 토큰:** 1,200</small>",
         unsafe_allow_html=True,
     )
+
+# ── session_state로 API Key 유지 ──
+if "api_key" not in st.session_state:
+    st.session_state.api_key = ""
+
+api_key = st.session_state.api_key
 
 
 # ──────────────────────────────────────────────────────────
@@ -254,16 +246,59 @@ st.markdown("""
 # 5. 메인 로직
 # ──────────────────────────────────────────────────────────
 if not api_key:
-    st.warning("👈 왼쪽 사이드바에 OpenAI API Key를 입력해야 마법이 시작됩니다!")
-else:
-    client = OpenAI(api_key=api_key)
-
-    truncated = f"{api_key[:7]}...{api_key[-4:]}"
+    # ── 중앙 API Key 입력 카드 ──
+    st.markdown('<div class="magic-card">', unsafe_allow_html=True)
+    st.markdown('<p class="card-title">🔑 마법의 열쇠 입력</p>', unsafe_allow_html=True)
     st.markdown(
-        f'<div class="api-ok"><span class="api-dot"></span>API Key 활성화됨 &nbsp;({truncated})</div>',
+        '<p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.2rem;">'
+        'OpenAI API Key를 입력하면 마법이 시작됩니다!</p>',
         unsafe_allow_html=True,
     )
 
+    input_col1, input_col2, input_col3 = st.columns([1, 3, 1])
+    with input_col2:
+        key_input = st.text_input(
+            "",
+            type="password",
+            placeholder="OpenAI API Key를 입력하세요 (sk-...)",
+            label_visibility="collapsed",
+        )
+        btn_activate = st.button("🪄 마법 활성화", use_container_width=True)
+        st.markdown(
+            "<p style='text-align:center;font-size:0.78rem;color:#a89880;opacity:0.7;margin-top:0.5rem;'>"
+            "🛡️ API Key는 이 세션에서만 사용되며 서버에 저장되지 않습니다.</p>",
+            unsafe_allow_html=True,
+        )
+
+    if btn_activate:
+        if not key_input:
+            st.error("⚠️ API Key를 입력해주세요.")
+        elif not key_input.startswith("sk-"):
+            st.error("❌ 올바른 API Key 형식이 아닙니다. (sk-... 로 시작해야 합니다)")
+        else:
+            st.session_state.api_key = key_input
+            st.rerun()
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+else:
+    client = OpenAI(api_key=api_key)
+
+    # ── API 상태 표시 + 변경 버튼 ──
+    truncated = f"{api_key[:7]}...{api_key[-4:]}"
+    col_status, col_btn = st.columns([4, 1])
+    with col_status:
+        st.markdown(
+            f'<div class="api-ok"><span class="api-dot"></span>'
+            f'API Key 활성화됨 &nbsp;({truncated})</div>',
+            unsafe_allow_html=True,
+        )
+    with col_btn:
+        if st.button("🔄 변경", use_container_width=True):
+            st.session_state.api_key = ""
+            st.rerun()
+
+    # ── 입력 폼 카드 ──
     st.markdown('<div class="magic-card">', unsafe_allow_html=True)
     st.markdown('<p class="card-title">🎩 당신의 이야기를 들려주세요</p>', unsafe_allow_html=True)
 

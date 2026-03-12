@@ -11,12 +11,11 @@ st.set_page_config(
 )
 
 # ──────────────────────────────────────────────────────────
-# 2. 전체 스타일링 (해리포터 다크 테마 + 골드 포인트)
+# 2. 전체 스타일링
 # ──────────────────────────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
-@import url('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css');
 
 :root {
     --gold:        #f5c518;
@@ -113,7 +112,6 @@ label[data-testid="stWidgetLabel"] > div > p {
     color: #fff !important;
     border: 1px solid rgba(197,165,49,0.5) !important;
     border-radius: 12px !important;
-    padding: 0.8rem 1.5rem !important;
     font-family: 'Cinzel', serif !important;
     font-size: 1rem !important; font-weight: 700 !important;
     letter-spacing: 1px !important; width: 100% !important;
@@ -213,7 +211,13 @@ section[data-testid="stSidebar"] * { color: var(--text-primary) !important; }
 
 
 # ──────────────────────────────────────────────────────────
-# 3. 사이드바 — 모델 정보만 표시
+# 3. Secrets에서 불러오기
+# ──────────────────────────────────────────────────────────
+api_key = st.secrets.get("OPENAI_API_KEY", "")
+access_password = st.secrets.get("ACCESS_PASSWORD", "")
+
+# ──────────────────────────────────────────────────────────
+# 4. 사이드바 — 모델 정보
 # ──────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("### ⚙️ 모델 설정")
@@ -222,15 +226,8 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-# ── session_state로 API Key 유지 ──
-if "api_key" not in st.session_state:
-    st.session_state.api_key = ""
-
-api_key = st.session_state.api_key
-
-
 # ──────────────────────────────────────────────────────────
-# 4. 헤더
+# 5. 헤더
 # ──────────────────────────────────────────────────────────
 st.markdown("""
 <div class="sorting-header">
@@ -243,100 +240,92 @@ st.markdown("""
 
 
 # ──────────────────────────────────────────────────────────
-# 5. 메인 로직
+# 6. 비밀번호 인증
 # ──────────────────────────────────────────────────────────
-if not api_key:
-    # ── 중앙 API Key 입력 카드 ──
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
     st.markdown('<div class="magic-card">', unsafe_allow_html=True)
-    st.markdown('<p class="card-title">🔑 마법의 열쇠 입력</p>', unsafe_allow_html=True)
+    st.markdown('<p class="card-title">🔐 입장 암호 입력</p>', unsafe_allow_html=True)
     st.markdown(
         '<p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.2rem;">'
-        'OpenAI API Key를 입력하면 마법이 시작됩니다!</p>',
+        'KAIST IMMS 수업 참여자만 입장 가능합니다.</p>',
         unsafe_allow_html=True,
     )
 
-    input_col1, input_col2, input_col3 = st.columns([1, 3, 1])
-    with input_col2:
-        key_input = st.text_input(
+    _, col, _ = st.columns([1, 3, 1])
+    with col:
+        pw_input = st.text_input(
             "",
             type="password",
-            placeholder="OpenAI API Key를 입력하세요 (sk-...)",
+            placeholder="수업 비밀번호를 입력하세요",
             label_visibility="collapsed",
         )
-        btn_activate = st.button("🪄 마법 활성화", use_container_width=True)
+        btn = st.button("✨ 입장하기", use_container_width=True)
         st.markdown(
             "<p style='text-align:center;font-size:0.78rem;color:#a89880;opacity:0.7;margin-top:0.5rem;'>"
-            "🛡️ API Key는 이 세션에서만 사용되며 서버에 저장되지 않습니다.</p>",
+            "🛡️ 비밀번호는 수업 담당자에게 문의하세요.</p>",
             unsafe_allow_html=True,
         )
 
-    if btn_activate:
-        if not key_input:
-            st.error("⚠️ API Key를 입력해주세요.")
-        elif not key_input.startswith("sk-"):
-            st.error("❌ 올바른 API Key 형식이 아닙니다. (sk-... 로 시작해야 합니다)")
-        else:
-            st.session_state.api_key = key_input
+    if btn:
+        if not pw_input:
+            st.error("⚠️ 비밀번호를 입력해주세요.")
+        elif pw_input == access_password:
+            st.session_state.authenticated = True
             st.rerun()
+        else:
+            st.error("❌ 비밀번호가 틀렸습니다. 다시 확인해주세요.")
 
     st.markdown('</div>', unsafe_allow_html=True)
+    st.stop()
 
-else:
-    client = OpenAI(api_key=api_key)
 
-    # ── API 상태 표시 + 변경 버튼 ──
-    truncated = f"{api_key[:7]}...{api_key[-4:]}"
-    col_status, col_btn = st.columns([4, 1])
-    with col_status:
-        st.markdown(
-            f'<div class="api-ok"><span class="api-dot"></span>'
-            f'API Key 활성화됨 &nbsp;({truncated})</div>',
-            unsafe_allow_html=True,
+# ──────────────────────────────────────────────────────────
+# 7. 메인 앱 (인증 통과 후)
+# ──────────────────────────────────────────────────────────
+client = OpenAI(api_key=api_key)
+
+# ── 입력 폼 카드 ──
+st.markdown('<div class="magic-card">', unsafe_allow_html=True)
+st.markdown('<p class="card-title">🎩 당신의 이야기를 들려주세요</p>', unsafe_allow_html=True)
+
+with st.form("sorting_form"):
+    col1, col2 = st.columns(2)
+    with col1:
+        career = st.text_input(
+            "💼 경력",
+            value="9년차 마케팅 기획자",
+            placeholder="예: 9년차 마케팅 기획자",
         )
-    with col_btn:
-        if st.button("🔄 변경", use_container_width=True):
-            st.session_state.api_key = ""
-            st.rerun()
+        personality = st.text_input(
+            "⭐ 나를 표현하는 키워드",
+            value="패스트 러너, 엄청난 열정, 적용력",
+            placeholder="예: 패스트 러너, 열정, 적응력",
+        )
+    with col2:
+        strength = st.text_area(
+            "⚡ 강점 및 스킬",
+            value="PPT 시각화, 아이디어 기획, 파이썬 기초",
+            placeholder="예: PPT 시각화, 아이디어 기획, 파이썬 기초",
+            height=100,
+        )
+        goal = st.text_input(
+            "🎯 이번 수업의 목표",
+            value="AI를 비즈니스에 실제 적용하기",
+            placeholder="예: AI를 비즈니스에 실제 적용하기",
+        )
 
-    # ── 입력 폼 카드 ──
-    st.markdown('<div class="magic-card">', unsafe_allow_html=True)
-    st.markdown('<p class="card-title">🎩 당신의 이야기를 들려주세요</p>', unsafe_allow_html=True)
+    submitted = st.form_submit_button("🪄 분류 모자 쓰기")
 
-    with st.form("sorting_form"):
-        col1, col2 = st.columns(2)
-        with col1:
-            career = st.text_input(
-                "💼 경력",
-                value="9년차 마케팅 기획자",
-                placeholder="예: 9년차 마케팅 기획자",
-            )
-            personality = st.text_input(
-                "⭐ 나를 표현하는 키워드",
-                value="패스트 러너, 엄청난 열정, 적용력",
-                placeholder="예: 패스트 러너, 열정, 적응력",
-            )
-        with col2:
-            strength = st.text_area(
-                "⚡ 강점 및 스킬",
-                value="PPT 시각화, 아이디어 기획, 파이썬 기초",
-                placeholder="예: PPT 시각화, 아이디어 기획, 파이썬 기초",
-                height=100,
-            )
-            goal = st.text_input(
-                "🎯 이번 수업의 목표",
-                value="AI를 비즈니스에 실제 적용하기",
-                placeholder="예: AI를 비즈니스에 실제 적용하기",
-            )
+st.markdown('</div>', unsafe_allow_html=True)
 
-        submitted = st.form_submit_button("🪄 분류 모자 쓰기")
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    if submitted:
-        if not all([career, personality, strength, goal]):
-            st.error("⚠️ 모든 항목을 입력해주세요.")
-        else:
-            sorting_hat_prompt = f"""너는 호그와트의 '분류 모자'이면서 동시에 냉철한 비즈니스 전략가야.
+if submitted:
+    if not all([career, personality, strength, goal]):
+        st.error("⚠️ 모든 항목을 입력해주세요.")
+    else:
+        sorting_hat_prompt = f"""너는 호그와트의 '분류 모자'이면서 동시에 냉철한 비즈니스 전략가야.
 아래 사용자의 정보를 바탕으로 4개 기숙사 중 하나를 배정해줘.
 
 [기숙사별 정의]
@@ -372,43 +361,43 @@ else:
 > "[강렬하고 임팩트 있는 자기소개 한 문장. 경력과 목표를 녹여낼 것]"
 """
 
-            with st.spinner("흐음... 아주 흥미롭군... 당신의 커리어 DNA를 분석하는 중..."):
-                try:
-                    response = client.chat.completions.create(
-                        model="gpt-4o-mini",
-                        messages=[{"role": "system", "content": sorting_hat_prompt}],
-                        temperature=0.85,
-                        max_tokens=1200,
-                    )
-                    result = response.choices[0].message.content
+        with st.spinner("흐음... 아주 흥미롭군... 당신의 커리어 DNA를 분석하는 중..."):
+            try:
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[{"role": "system", "content": sorting_hat_prompt}],
+                    temperature=0.85,
+                    max_tokens=1200,
+                )
+                result = response.choices[0].message.content
 
-                    st.balloons()
+                st.balloons()
 
-                    st.markdown("""
-                    <div class="result-box">
-                        <div class="result-header">
-                            <span class="crystal-ball">🔮</span>
-                            <p class="result-title-text">분류 모자의 판결</p>
-                        </div>
+                st.markdown("""
+                <div class="result-box">
+                    <div class="result-header">
+                        <span class="crystal-ball">🔮</span>
+                        <p class="result-title-text">분류 모자의 판결</p>
                     </div>
-                    """, unsafe_allow_html=True)
+                </div>
+                """, unsafe_allow_html=True)
 
-                    st.markdown(result)
+                st.markdown(result)
 
-                except Exception as e:
-                    err = str(e)
-                    if "401" in err or "Unauthorized" in err or "Incorrect API key" in err:
-                        st.error("❌ API Key가 올바르지 않습니다. 유효한 OpenAI API Key를 확인해주세요.")
-                    elif "429" in err or "Rate limit" in err or "quota" in err:
-                        st.error("⏱️ API 요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요.")
-                    elif "500" in err or "503" in err:
-                        st.error("🔧 OpenAI 서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.")
-                    else:
-                        st.error(f"⚠️ 오류가 발생했습니다: {e}")
+            except Exception as e:
+                err = str(e)
+                if "401" in err or "Unauthorized" in err or "Incorrect API key" in err:
+                    st.error("❌ API Key가 올바르지 않습니다. 관리자에게 문의해주세요.")
+                elif "429" in err or "Rate limit" in err or "quota" in err:
+                    st.error("⏱️ 잠시 사용량이 초과되었습니다. 1분 후 다시 시도해주세요.")
+                elif "500" in err or "503" in err:
+                    st.error("🔧 OpenAI 서버 문제입니다. 잠시 후 다시 시도해주세요.")
+                else:
+                    st.error(f"⚠️ 오류가 발생했습니다: {e}")
 
 
 # ──────────────────────────────────────────────────────────
-# 6. 기숙사 안내 섹션
+# 8. 기숙사 안내 섹션
 # ──────────────────────────────────────────────────────────
 st.markdown('<hr class="gold-divider">', unsafe_allow_html=True)
 st.markdown('<p style="font-family:\'Cinzel\',serif;font-size:1.3rem;font-weight:700;color:#f5c518;text-align:center;letter-spacing:2px;margin-bottom:1rem;">⚡ 4개의 기숙사</p>', unsafe_allow_html=True)
@@ -448,7 +437,7 @@ st.markdown("""
 
 
 # ──────────────────────────────────────────────────────────
-# 7. 푸터
+# 9. 푸터
 # ──────────────────────────────────────────────────────────
 st.markdown("""
 <div class="site-footer">

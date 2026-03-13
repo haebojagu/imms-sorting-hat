@@ -44,65 +44,50 @@ st.markdown("""
 }
 .main-title {
     font-family: 'Cinzel', serif !important;
-    font-size: 2.4rem !important;
-    font-weight: 900 !important;
+    font-size: 2.4rem !important; font-weight: 900 !important;
     background: linear-gradient(135deg, #ffd700 0%, #c9a227 50%, #ffd700 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: 2px;
-    margin: 0 !important;
-    line-height: 1.2 !important;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    letter-spacing: 2px; margin: 0 !important; line-height: 1.2 !important;
 }
 .sub-title {
-    font-family: 'Cinzel', serif;
-    font-size: 0.9rem; color: var(--gold-dark);
-    letter-spacing: 3px; text-transform: uppercase;
-    margin-top: 0.4rem; opacity: 0.9;
+    font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--gold-dark);
+    letter-spacing: 3px; text-transform: uppercase; margin-top: 0.4rem; opacity: 0.9;
 }
 .desc-text { font-size: 1rem; color: var(--text-secondary); margin-top: 0.6rem; }
 .desc-text span { color: var(--gold); font-weight: 600; }
 
 .pw-title {
-    font-family: 'Cinzel', serif;
-    font-size: 1.15rem; font-weight: 700;
-    color: var(--gold); letter-spacing: 1px;
-    text-align: center; margin-bottom: 0.3rem;
+    font-family: 'Cinzel', serif; font-size: 1.15rem; font-weight: 700;
+    color: var(--gold); letter-spacing: 1px; text-align: center; margin-bottom: 0.3rem;
 }
 .pw-desc {
     font-size: 0.9rem; color: var(--text-secondary);
     text-align: center; margin-bottom: 1.2rem;
 }
+.pw-note { text-align:center; font-size:0.78rem; color:#a89880; opacity:0.7; margin-top:0.6rem; }
 
-.main-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 16px; padding: 1.8rem 2rem;
-    margin-bottom: 1.4rem;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 30px rgba(197,165,49,0.1), inset 0 1px 0 rgba(197,165,49,0.1);
-    position: relative; overflow: hidden;
+[data-testid="stForm"] {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 16px !important;
+    padding: 1.8rem 2rem !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 0 30px rgba(197,165,49,0.1) !important;
 }
-.main-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    opacity: 0.6;
-}
-.card-title {
+
+.section-title {
     font-family: 'Cinzel', serif; font-size: 1.05rem; font-weight: 600;
-    color: var(--gold); letter-spacing: 1px;
-    margin-bottom: 1rem; text-align: center;
+    color: var(--gold); letter-spacing: 1px; text-align: center;
+    margin-bottom: 1rem; margin-top: 0;
 }
 
 .stTextInput > div > div > input,
 .stTextArea > div > div > textarea {
     background: rgba(255,255,255,0.05) !important;
     border: 1px solid rgba(197,165,49,0.3) !important;
-    border-radius: 10px !important;
-    color: var(--text-primary) !important;
+    border-radius: 10px !important; color: var(--text-primary) !important;
     font-family: 'Noto Sans KR', sans-serif !important;
-    padding: 0.75rem 1rem !important;
-    transition: all 0.3s !important;
+    padding: 0.75rem 1rem !important; transition: all 0.3s !important;
 }
 .stTextInput > div > div > input:focus,
 .stTextArea > div > div > textarea:focus {
@@ -117,10 +102,8 @@ label[data-testid="stWidgetLabel"] > div > p {
 .stButton > button,
 .stFormSubmitButton > button {
     background: linear-gradient(135deg, #74151a 0%, #a01d24 50%, #74151a 100%) !important;
-    color: #fff !important;
-    border: 1px solid rgba(197,165,49,0.5) !important;
-    border-radius: 12px !important;
-    font-family: 'Cinzel', serif !important;
+    color: #fff !important; border: 1px solid rgba(197,165,49,0.5) !important;
+    border-radius: 12px !important; font-family: 'Cinzel', serif !important;
     font-size: 1rem !important; font-weight: 700 !important;
     letter-spacing: 1px !important; width: 100% !important;
     height: 3.2em !important; transition: all 0.3s !important;
@@ -128,14 +111,12 @@ label[data-testid="stWidgetLabel"] > div > p {
 .stButton > button:hover,
 .stFormSubmitButton > button:hover {
     background: linear-gradient(135deg, #9b1c23 0%, #c02030 100%) !important;
-    border-color: var(--gold) !important;
-    transform: translateY(-2px) !important;
+    border-color: var(--gold) !important; transform: translateY(-2px) !important;
     box-shadow: 0 8px 24px rgba(116,21,26,0.6) !important;
 }
 
 .result-box {
-    background: var(--card-bg);
-    border: 1px solid rgba(197,165,49,0.5);
+    background: var(--card-bg); border: 1px solid rgba(197,165,49,0.5);
     border-radius: 16px; padding: 2rem; margin-top: 1.5rem;
     position: relative; overflow: hidden;
 }
@@ -157,9 +138,9 @@ label[data-testid="stWidgetLabel"] > div > p {
 .house-card { border-radius: 14px; padding: 1.2rem; border: 1px solid; transition: transform 0.3s; }
 .house-card:hover { transform: translateY(-4px); }
 .house-gryffindor { background: linear-gradient(135deg, rgba(116,0,1,0.4), rgba(211,166,37,0.15)); border-color: rgba(211,166,37,0.4); }
-.house-ravenclaw  { background: linear-gradient(135deg, rgba(14,26,64,0.6), rgba(148,107,45,0.2)); border-color: rgba(148,107,45,0.4); }
+.house-ravenclaw  { background: linear-gradient(135deg, rgba(14,26,64,0.6), rgba(148,107,45,0.2));  border-color: rgba(148,107,45,0.4); }
 .house-slytherin  { background: linear-gradient(135deg, rgba(26,71,42,0.5), rgba(170,170,170,0.1)); border-color: rgba(100,180,120,0.3); }
-.house-hufflepuff { background: linear-gradient(135deg, rgba(55,46,41,0.5), rgba(240,199,94,0.2)); border-color: rgba(240,199,94,0.4); }
+.house-hufflepuff { background: linear-gradient(135deg, rgba(55,46,41,0.5), rgba(240,199,94,0.2));  border-color: rgba(240,199,94,0.4); }
 .house-name-g { color: #d3a625; font-family:'Cinzel',serif; font-weight:700; font-size:1rem; }
 .house-name-r { color: #a8b4d8; font-family:'Cinzel',serif; font-weight:700; font-size:1rem; }
 .house-name-s { color: #7fbf8a; font-family:'Cinzel',serif; font-weight:700; font-size:1rem; }
@@ -173,11 +154,10 @@ label[data-testid="stWidgetLabel"] > div > p {
 .badge-h { background:rgba(240,199,94,0.2);   color:#f0c75e; border:1px solid rgba(240,199,94,0.3); }
 
 .gold-divider { border:none; border-top:1px solid rgba(197,165,49,0.2); margin:2rem 0 1.5rem; }
-.pw-note { text-align:center; font-size:0.78rem; color:#a89880; opacity:0.7; margin-top:0.6rem; }
 .site-footer {
-    text-align:center; padding:1.5rem 0 0.5rem;
-    color:var(--text-secondary); font-size:0.82rem;
-    opacity:0.65; border-top:1px solid rgba(197,165,49,0.12); margin-top:2rem;
+    text-align:center; padding:1.5rem 0 0.5rem; color:var(--text-secondary);
+    font-size:0.82rem; opacity:0.65;
+    border-top:1px solid rgba(197,165,49,0.12); margin-top:2rem;
 }
 
 section[data-testid="stSidebar"] { background: rgba(10,14,28,0.97) !important; border-right: 1px solid rgba(197,165,49,0.2) !important; }
@@ -189,7 +169,7 @@ section[data-testid="stSidebar"] * { color: var(--text-primary) !important; }
 
 
 # ── Secrets ──
-api_key = st.secrets.get("OPENAI_API_KEY", "")
+api_key         = st.secrets.get("OPENAI_API_KEY", "")
 access_password = st.secrets.get("ACCESS_PASSWORD", "")
 
 # ── 사이드바 ──
@@ -216,14 +196,12 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-
     st.markdown("<p class='pw-title'>🔐 입장 암호 입력</p>", unsafe_allow_html=True)
     st.markdown("<p class='pw-desc'>KAIST IMMS 수업 참여자만 입장 가능합니다.</p>", unsafe_allow_html=True)
 
     with st.form("pw_form"):
         pw_input = st.text_input(
-            "비밀번호",
-            type="password",
+            "비밀번호", type="password",
             placeholder="수업 비밀번호를 입력하세요",
             label_visibility="collapsed",
         )
@@ -246,8 +224,7 @@ if not st.session_state.authenticated:
 # ── 메인 앱 (인증 통과 후) ──
 client = OpenAI(api_key=api_key)
 
-st.markdown('<div class="main-card">', unsafe_allow_html=True)
-st.markdown('<p class="card-title">🎩 당신의 이야기를 들려주세요</p>', unsafe_allow_html=True)
+st.markdown("<p class='section-title'>🎩 당신의 이야기를 들려주세요</p>", unsafe_allow_html=True)
 
 with st.form("sorting_form"):
     col1, col2 = st.columns(2)
@@ -258,8 +235,6 @@ with st.form("sorting_form"):
         strength = st.text_area("⚡ 강점 및 스킬", value="PPT 시각화, 아이디어 기획, 파이썬 기초", placeholder="예: PPT 시각화, 아이디어 기획, 파이썬 기초", height=100)
         goal = st.text_input("🎯 이번 수업의 목표", value="AI를 비즈니스에 실제 적용하기", placeholder="예: AI를 비즈니스에 실제 적용하기")
     submitted = st.form_submit_button("🪄 분류 모자 쓰기", use_container_width=True)
-
-st.markdown('</div>', unsafe_allow_html=True)
 
 if submitted:
     if not all([career, personality, strength, goal]):
@@ -300,7 +275,6 @@ if submitted:
 ### ⚡ 팀원을 향한 자기소개 문구
 > "[강렬하고 임팩트 있는 자기소개 한 문장. 경력과 목표를 녹여낼 것]"
 """
-
         with st.spinner("흐음... 아주 흥미롭군... 당신의 커리어 DNA를 분석하는 중..."):
             try:
                 response = client.chat.completions.create(

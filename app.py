@@ -182,14 +182,6 @@ label[data-testid="stWidgetLabel"] > div > p {
 .badge-s { background:rgba(100,180,120,0.15); color:#7fbf8a; border:1px solid rgba(100,180,120,0.3); }
 .badge-h { background:rgba(240,199,94,0.2);   color:#f0c75e; border:1px solid rgba(240,199,94,0.3); }
 
-.api-ok {
-    display:inline-flex; align-items:center; gap:0.5rem;
-    background:rgba(26,71,42,0.3); border:1px solid rgba(46,160,67,0.3);
-    border-radius:8px; padding:0.5rem 0.9rem;
-    font-size:0.82rem; color:#57ab6e; margin-bottom:1rem;
-}
-.api-dot { width:8px; height:8px; background:#4CAF50; border-radius:50%; flex-shrink:0; }
-
 .gold-divider { border:none; border-top:1px solid rgba(197,165,49,0.2); margin:2rem 0 1.5rem; }
 
 .site-footer {
@@ -247,9 +239,13 @@ if "authenticated" not in st.session_state:
 
 if not st.session_state.authenticated:
     st.markdown('<div class="magic-card">', unsafe_allow_html=True)
-    st.markdown('<p class="card-title">🔐 입장 암호 입력</p>', unsafe_allow_html=True)
     st.markdown(
-        '<p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.2rem;">'
+        '<p class="card-title" style="text-align:center;">🔐 입장 암호 입력</p>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<p style="color:var(--text-secondary);font-size:0.9rem;'
+        'margin-bottom:1.2rem;text-align:center;">'
         'KAIST IMMS 수업 참여자만 입장 가능합니다.</p>',
         unsafe_allow_html=True,
     )
@@ -287,7 +283,6 @@ if not st.session_state.authenticated:
 # ──────────────────────────────────────────────────────────
 client = OpenAI(api_key=api_key)
 
-# ── 입력 폼 카드 ──
 st.markdown('<div class="magic-card">', unsafe_allow_html=True)
 st.markdown('<p class="card-title">🎩 당신의 이야기를 들려주세요</p>', unsafe_allow_html=True)
 

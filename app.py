@@ -38,6 +38,7 @@ st.markdown("""
     font-family: 'Noto Sans KR', sans-serif !important;
 }
 
+/* ── 헤더 ── */
 .sorting-header { text-align: center; padding: 2rem 1rem 1.5rem; }
 .hat-icon {
     font-size: 4rem; display: block; margin-bottom: 0.4rem;
@@ -69,10 +70,53 @@ st.markdown("""
 .desc-text { font-size: 1rem; color: var(--text-secondary); margin-top: 0.6rem; }
 .desc-text span { color: var(--gold); font-weight: 600; }
 
+/* ── 비밀번호 카드 위쪽 (제목+설명) ── */
+.pw-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 2rem 2rem 0.5rem;
+    margin-bottom: 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 30px rgba(197,165,49,0.1), inset 0 1px 0 rgba(197,165,49,0.1);
+    position: relative; overflow: hidden;
+    text-align: center;
+}
+.pw-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.6;
+}
+.pw-card-title {
+    font-family: 'Cinzel', serif; font-size: 1.15rem; font-weight: 700;
+    color: var(--gold); letter-spacing: 1px;
+    margin-bottom: 0.4rem;
+    text-align: center;
+}
+.pw-card-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 0;
+}
+
+/* ── 비밀번호 폼 래퍼 (카드 아래쪽) ── */
+.pw-form-wrap {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+    padding: 1.2rem 2rem 1.6rem;
+    margin-bottom: 1.4rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 30px rgba(197,165,49,0.1);
+}
+
+/* ── 메인 입력 카드 위쪽 (제목) ── */
 .magic-card {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    border-radius: 16px; padding: 2rem 2rem 1.6rem; margin-bottom: 1.4rem;
+    border-radius: 16px; padding: 2rem 2rem 0.5rem; margin-bottom: 0;
     backdrop-filter: blur(10px);
     box-shadow: 0 0 30px rgba(197,165,49,0.1), inset 0 1px 0 rgba(197,165,49,0.1);
     position: relative; overflow: hidden;
@@ -82,16 +126,26 @@ st.markdown("""
     background: linear-gradient(90deg, transparent, var(--gold), transparent);
     opacity: 0.6;
 }
+
+/* ── 메인 폼 래퍼 (카드 아래쪽) ── */
+.magic-form-wrap {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+    padding: 1rem 2rem 1.6rem;
+    margin-bottom: 1.4rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 30px rgba(197,165,49,0.1);
+}
 .card-title {
     font-family: 'Cinzel', serif; font-size: 1.05rem; font-weight: 600;
     color: var(--gold); letter-spacing: 1px;
-    margin-bottom: 0.5rem; text-align: center;
-}
-.card-desc {
-    font-size: 0.9rem; color: var(--text-secondary);
-    text-align: center; margin-bottom: 1.4rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
 }
 
+/* ── 입력 필드 ── */
 .stTextInput > div > div > input,
 .stTextArea > div > div > textarea {
     background: rgba(255,255,255,0.05) !important;
@@ -112,7 +166,9 @@ label[data-testid="stWidgetLabel"] > div > p {
     color: var(--gold-dark) !important; font-weight: 600 !important; font-size: 0.9rem !important;
 }
 
-.stButton > button {
+/* ── 버튼 ── */
+.stButton > button,
+.stFormSubmitButton > button {
     background: linear-gradient(135deg, #74151a 0%, #a01d24 50%, #74151a 100%) !important;
     color: #fff !important;
     border: 1px solid rgba(197,165,49,0.5) !important;
@@ -122,13 +178,15 @@ label[data-testid="stWidgetLabel"] > div > p {
     letter-spacing: 1px !important; width: 100% !important;
     height: 3.2em !important; transition: all 0.3s !important;
 }
-.stButton > button:hover {
+.stButton > button:hover,
+.stFormSubmitButton > button:hover {
     background: linear-gradient(135deg, #9b1c23 0%, #c02030 100%) !important;
     border-color: var(--gold) !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 8px 24px rgba(116,21,26,0.6) !important;
 }
 
+/* ── 결과 박스 ── */
 .result-box {
     background: var(--card-bg);
     border: 1px solid rgba(197,165,49,0.5);
@@ -149,6 +207,7 @@ label[data-testid="stWidgetLabel"] > div > p {
     color: var(--gold); letter-spacing: 2px; margin-top: 0.4rem;
 }
 
+/* ── 기숙사 그리드 ── */
 .houses-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;
 }
@@ -187,6 +246,7 @@ label[data-testid="stWidgetLabel"] > div > p {
 .badge-s { background:rgba(100,180,120,0.15); color:#7fbf8a; border:1px solid rgba(100,180,120,0.3); }
 .badge-h { background:rgba(240,199,94,0.2);   color:#f0c75e; border:1px solid rgba(240,199,94,0.3); }
 
+/* ── 기타 ── */
 .gold-divider { border:none; border-top:1px solid rgba(197,165,49,0.2); margin:2rem 0 1.5rem; }
 .pw-note {
     text-align:center; font-size:0.78rem;
@@ -206,6 +266,9 @@ section[data-testid="stSidebar"] * { color: var(--text-primary) !important; }
 
 #MainMenu, footer, header { visibility: hidden; }
 .block-container { padding-top: 1rem !important; max-width: 860px !important; }
+
+/* ── Streamlit 자동 생성 빈 div 숨기기 ── */
+div[data-testid="stVerticalBlock"] > div:empty { display: none !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -248,11 +311,13 @@ if "authenticated" not in st.session_state:
 if not st.session_state.authenticated:
 
     st.markdown("""
-    <div class="magic-card">
-        <p class="card-title">🔐 입장 암호 입력</p>
-        <p class="card-desc">KAIST IMMS 수업 참여자만 입장 가능합니다.</p>
+    <div class="pw-card">
+        <p class="pw-card-title">🔐 입장 암호 입력</p>
+        <p class="pw-card-desc">KAIST IMMS 수업 참여자만 입장 가능합니다.</p>
     </div>
     """, unsafe_allow_html=True)
+
+    st.markdown('<div class="pw-form-wrap">', unsafe_allow_html=True)
 
     with st.form("pw_form"):
         pw_input = st.text_input(
@@ -262,6 +327,8 @@ if not st.session_state.authenticated:
             label_visibility="collapsed",
         )
         btn = st.form_submit_button("✨ 입장하기", use_container_width=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown(
         "<p class='pw-note'>🛡️ 비밀번호는 수업 담당자에게 문의하세요.</p>",
@@ -285,8 +352,13 @@ if not st.session_state.authenticated:
 # ──────────────────────────────────────────────────────────
 client = OpenAI(api_key=api_key)
 
-st.markdown('<div class="magic-card">', unsafe_allow_html=True)
-st.markdown('<p class="card-title" style="text-align:left;">🎩 당신의 이야기를 들려주세요</p>', unsafe_allow_html=True)
+st.markdown("""
+<div class="magic-card">
+    <p class="card-title">🎩 당신의 이야기를 들려주세요</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="magic-form-wrap">', unsafe_allow_html=True)
 
 with st.form("sorting_form"):
     col1, col2 = st.columns(2)
@@ -370,13 +442,13 @@ if submitted:
                 st.balloons()
 
                 st.markdown("""
-                <div class="result-box">
-                    <div class="result-header">
-                        <span class="crystal-ball">🔮</span>
-                        <p class="result-title-text">분류 모자의 판결</p>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+<div class="result-box">
+    <div class="result-header">
+        <span class="crystal-ball">🔮</span>
+        <p class="result-title-text">분류 모자의 판결</p>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
                 st.markdown(result)
 

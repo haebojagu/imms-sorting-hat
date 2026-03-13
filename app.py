@@ -72,7 +72,7 @@ st.markdown("""
 .magic-card {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    border-radius: 16px; padding: 1.6rem 1.8rem; margin-bottom: 1.4rem;
+    border-radius: 16px; padding: 2rem 2rem 1.6rem; margin-bottom: 1.4rem;
     backdrop-filter: blur(10px);
     box-shadow: 0 0 30px rgba(197,165,49,0.1), inset 0 1px 0 rgba(197,165,49,0.1);
     position: relative; overflow: hidden;
@@ -83,8 +83,13 @@ st.markdown("""
     opacity: 0.6;
 }
 .card-title {
-    font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 600;
-    color: var(--gold); letter-spacing: 1px; margin-bottom: 1rem;
+    font-family: 'Cinzel', serif; font-size: 1.05rem; font-weight: 600;
+    color: var(--gold); letter-spacing: 1px;
+    margin-bottom: 0.5rem; text-align: center;
+}
+.card-desc {
+    font-size: 0.9rem; color: var(--text-secondary);
+    text-align: center; margin-bottom: 1.4rem;
 }
 
 .stTextInput > div > div > input,
@@ -183,7 +188,10 @@ label[data-testid="stWidgetLabel"] > div > p {
 .badge-h { background:rgba(240,199,94,0.2);   color:#f0c75e; border:1px solid rgba(240,199,94,0.3); }
 
 .gold-divider { border:none; border-top:1px solid rgba(197,165,49,0.2); margin:2rem 0 1.5rem; }
-
+.pw-note {
+    text-align:center; font-size:0.78rem;
+    color:#a89880; opacity:0.7; margin-top:0.6rem;
+}
 .site-footer {
     text-align:center; padding:1.5rem 0 0.5rem;
     color:var(--text-secondary); font-size:0.82rem;
@@ -209,7 +217,7 @@ api_key = st.secrets.get("OPENAI_API_KEY", "")
 access_password = st.secrets.get("ACCESS_PASSWORD", "")
 
 # ──────────────────────────────────────────────────────────
-# 4. 사이드바 — 모델 정보
+# 4. 사이드바
 # ──────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("### ⚙️ 모델 설정")
@@ -238,32 +246,27 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    st.markdown('<div class="magic-card">', unsafe_allow_html=True)
-    st.markdown(
-        '<p class="card-title" style="text-align:center;">🔐 입장 암호 입력</p>',
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        '<p style="color:var(--text-secondary);font-size:0.9rem;'
-        'margin-bottom:1.2rem;text-align:center;">'
-        'KAIST IMMS 수업 참여자만 입장 가능합니다.</p>',
-        unsafe_allow_html=True,
-    )
 
-    _, col, _ = st.columns([1, 3, 1])
-    with col:
+    st.markdown("""
+    <div class="magic-card">
+        <p class="card-title">🔐 입장 암호 입력</p>
+        <p class="card-desc">KAIST IMMS 수업 참여자만 입장 가능합니다.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    with st.form("pw_form"):
         pw_input = st.text_input(
-            "",
+            "비밀번호",
             type="password",
             placeholder="수업 비밀번호를 입력하세요",
             label_visibility="collapsed",
         )
-        btn = st.button("✨ 입장하기", use_container_width=True)
-        st.markdown(
-            "<p style='text-align:center;font-size:0.78rem;color:#a89880;opacity:0.7;margin-top:0.5rem;'>"
-            "🛡️ 비밀번호는 수업 담당자에게 문의하세요.</p>",
-            unsafe_allow_html=True,
-        )
+        btn = st.form_submit_button("✨ 입장하기", use_container_width=True)
+
+    st.markdown(
+        "<p class='pw-note'>🛡️ 비밀번호는 수업 담당자에게 문의하세요.</p>",
+        unsafe_allow_html=True,
+    )
 
     if btn:
         if not pw_input:
@@ -274,7 +277,6 @@ if not st.session_state.authenticated:
         else:
             st.error("❌ 비밀번호가 틀렸습니다. 다시 확인해주세요.")
 
-    st.markdown('</div>', unsafe_allow_html=True)
     st.stop()
 
 
@@ -284,7 +286,7 @@ if not st.session_state.authenticated:
 client = OpenAI(api_key=api_key)
 
 st.markdown('<div class="magic-card">', unsafe_allow_html=True)
-st.markdown('<p class="card-title">🎩 당신의 이야기를 들려주세요</p>', unsafe_allow_html=True)
+st.markdown('<p class="card-title" style="text-align:left;">🎩 당신의 이야기를 들려주세요</p>', unsafe_allow_html=True)
 
 with st.form("sorting_form"):
     col1, col2 = st.columns(2)
@@ -311,8 +313,7 @@ with st.form("sorting_form"):
             value="AI를 비즈니스에 실제 적용하기",
             placeholder="예: AI를 비즈니스에 실제 적용하기",
         )
-
-    submitted = st.form_submit_button("🪄 분류 모자 쓰기")
+    submitted = st.form_submit_button("🪄 분류 모자 쓰기", use_container_width=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
 

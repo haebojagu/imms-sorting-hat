@@ -1,18 +1,12 @@
 import streamlit as st
 from openai import OpenAI
 
-# ──────────────────────────────────────────────────────────
-# 1. 페이지 기본 설정
-# ──────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="🪄 KAIST IMMS AI Sorting Hat",
     page_icon="🪄",
     layout="centered",
 )
 
-# ──────────────────────────────────────────────────────────
-# 2. 전체 스타일링
-# ──────────────────────────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
@@ -31,14 +25,13 @@ st.markdown("""
 .stApp {
     background-color: var(--deep-bg) !important;
     background-image:
-        radial-gradient(ellipse at 20% 50%, rgba(116,0,1,0.08)    0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(14,26,64,0.15)   0%, transparent 50%),
-        radial-gradient(ellipse at 50% 80%, rgba(26,71,42,0.08)   0%, transparent 50%);
+        radial-gradient(ellipse at 20% 50%, rgba(116,0,1,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(14,26,64,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(26,71,42,0.08) 0%, transparent 50%);
     color: var(--text-primary) !important;
     font-family: 'Noto Sans KR', sans-serif !important;
 }
 
-/* ── 헤더 ── */
 .sorting-header { text-align: center; padding: 2rem 1rem 1.5rem; }
 .hat-icon {
     font-size: 4rem; display: block; margin-bottom: 0.4rem;
@@ -70,82 +63,37 @@ st.markdown("""
 .desc-text { font-size: 1rem; color: var(--text-secondary); margin-top: 0.6rem; }
 .desc-text span { color: var(--gold); font-weight: 600; }
 
-/* ── 비밀번호 카드 위쪽 (제목+설명) ── */
-.pw-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 16px;
-    padding: 2rem 2rem 0.5rem;
-    margin-bottom: 0;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 30px rgba(197,165,49,0.1), inset 0 1px 0 rgba(197,165,49,0.1);
-    position: relative; overflow: hidden;
-    text-align: center;
-}
-.pw-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    opacity: 0.6;
-}
-.pw-card-title {
-    font-family: 'Cinzel', serif; font-size: 1.15rem; font-weight: 700;
+.pw-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.15rem; font-weight: 700;
     color: var(--gold); letter-spacing: 1px;
-    margin-bottom: 0.4rem;
-    text-align: center;
+    text-align: center; margin-bottom: 0.3rem;
 }
-.pw-card-desc {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    text-align: center;
-    margin-bottom: 0;
+.pw-desc {
+    font-size: 0.9rem; color: var(--text-secondary);
+    text-align: center; margin-bottom: 1.2rem;
 }
 
-/* ── 비밀번호 폼 래퍼 (카드 아래쪽) ── */
-.pw-form-wrap {
+.main-card {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    border-top: none;
-    border-radius: 0 0 16px 16px;
-    padding: 1.2rem 2rem 1.6rem;
+    border-radius: 16px; padding: 1.8rem 2rem;
     margin-bottom: 1.4rem;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 30px rgba(197,165,49,0.1);
-}
-
-/* ── 메인 입력 카드 위쪽 (제목) ── */
-.magic-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 16px; padding: 2rem 2rem 0.5rem; margin-bottom: 0;
     backdrop-filter: blur(10px);
     box-shadow: 0 0 30px rgba(197,165,49,0.1), inset 0 1px 0 rgba(197,165,49,0.1);
     position: relative; overflow: hidden;
 }
-.magic-card::before {
+.main-card::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, var(--gold), transparent);
     opacity: 0.6;
-}
-
-/* ── 메인 폼 래퍼 (카드 아래쪽) ── */
-.magic-form-wrap {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-top: none;
-    border-radius: 0 0 16px 16px;
-    padding: 1rem 2rem 1.6rem;
-    margin-bottom: 1.4rem;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 30px rgba(197,165,49,0.1);
 }
 .card-title {
     font-family: 'Cinzel', serif; font-size: 1.05rem; font-weight: 600;
     color: var(--gold); letter-spacing: 1px;
-    margin-bottom: 0.5rem;
-    text-align: center;
+    margin-bottom: 1rem; text-align: center;
 }
 
-/* ── 입력 필드 ── */
 .stTextInput > div > div > input,
 .stTextArea > div > div > textarea {
     background: rgba(255,255,255,0.05) !important;
@@ -166,7 +114,6 @@ label[data-testid="stWidgetLabel"] > div > p {
     color: var(--gold-dark) !important; font-weight: 600 !important; font-size: 0.9rem !important;
 }
 
-/* ── 버튼 ── */
 .stButton > button,
 .stFormSubmitButton > button {
     background: linear-gradient(135deg, #74151a 0%, #a01d24 50%, #74151a 100%) !important;
@@ -186,7 +133,6 @@ label[data-testid="stWidgetLabel"] > div > p {
     box-shadow: 0 8px 24px rgba(116,21,26,0.6) !important;
 }
 
-/* ── 결과 박스 ── */
 .result-box {
     background: var(--card-bg);
     border: 1px solid rgba(197,165,49,0.5);
@@ -207,81 +153,46 @@ label[data-testid="stWidgetLabel"] > div > p {
     color: var(--gold); letter-spacing: 2px; margin-top: 0.4rem;
 }
 
-/* ── 기숙사 그리드 ── */
-.houses-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;
-}
-.house-card {
-    border-radius: 14px; padding: 1.2rem; border: 1px solid; transition: transform 0.3s;
-}
+.houses-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+.house-card { border-radius: 14px; padding: 1.2rem; border: 1px solid; transition: transform 0.3s; }
 .house-card:hover { transform: translateY(-4px); }
-.house-gryffindor {
-    background: linear-gradient(135deg, rgba(116,0,1,0.4), rgba(211,166,37,0.15));
-    border-color: rgba(211,166,37,0.4);
-}
-.house-ravenclaw {
-    background: linear-gradient(135deg, rgba(14,26,64,0.6), rgba(148,107,45,0.2));
-    border-color: rgba(148,107,45,0.4);
-}
-.house-slytherin {
-    background: linear-gradient(135deg, rgba(26,71,42,0.5), rgba(170,170,170,0.1));
-    border-color: rgba(100,180,120,0.3);
-}
-.house-hufflepuff {
-    background: linear-gradient(135deg, rgba(55,46,41,0.5), rgba(240,199,94,0.2));
-    border-color: rgba(240,199,94,0.4);
-}
+.house-gryffindor { background: linear-gradient(135deg, rgba(116,0,1,0.4), rgba(211,166,37,0.15)); border-color: rgba(211,166,37,0.4); }
+.house-ravenclaw  { background: linear-gradient(135deg, rgba(14,26,64,0.6), rgba(148,107,45,0.2)); border-color: rgba(148,107,45,0.4); }
+.house-slytherin  { background: linear-gradient(135deg, rgba(26,71,42,0.5), rgba(170,170,170,0.1)); border-color: rgba(100,180,120,0.3); }
+.house-hufflepuff { background: linear-gradient(135deg, rgba(55,46,41,0.5), rgba(240,199,94,0.2)); border-color: rgba(240,199,94,0.4); }
 .house-name-g { color: #d3a625; font-family:'Cinzel',serif; font-weight:700; font-size:1rem; }
 .house-name-r { color: #a8b4d8; font-family:'Cinzel',serif; font-weight:700; font-size:1rem; }
 .house-name-s { color: #7fbf8a; font-family:'Cinzel',serif; font-weight:700; font-size:1rem; }
 .house-name-h { color: #f0c75e; font-family:'Cinzel',serif; font-weight:700; font-size:1rem; }
 .house-sub  { font-size:0.75rem; font-style:italic; opacity:0.7; margin:0.15rem 0 0.5rem; }
 .house-desc { font-size:0.82rem; color:var(--text-secondary); line-height:1.5; margin-bottom:0.6rem; }
-.house-badge {
-    display:inline-block; font-size:0.72rem; font-weight:600;
-    padding:0.2rem 0.65rem; border-radius:20px; letter-spacing:0.5px;
-}
+.house-badge { display:inline-block; font-size:0.72rem; font-weight:600; padding:0.2rem 0.65rem; border-radius:20px; letter-spacing:0.5px; }
 .badge-g { background:rgba(211,166,37,0.2);  color:#d3a625; border:1px solid rgba(211,166,37,0.3); }
 .badge-r { background:rgba(168,180,216,0.15); color:#a8b4d8; border:1px solid rgba(148,107,45,0.3); }
 .badge-s { background:rgba(100,180,120,0.15); color:#7fbf8a; border:1px solid rgba(100,180,120,0.3); }
 .badge-h { background:rgba(240,199,94,0.2);   color:#f0c75e; border:1px solid rgba(240,199,94,0.3); }
 
-/* ── 기타 ── */
 .gold-divider { border:none; border-top:1px solid rgba(197,165,49,0.2); margin:2rem 0 1.5rem; }
-.pw-note {
-    text-align:center; font-size:0.78rem;
-    color:#a89880; opacity:0.7; margin-top:0.6rem;
-}
+.pw-note { text-align:center; font-size:0.78rem; color:#a89880; opacity:0.7; margin-top:0.6rem; }
 .site-footer {
     text-align:center; padding:1.5rem 0 0.5rem;
     color:var(--text-secondary); font-size:0.82rem;
     opacity:0.65; border-top:1px solid rgba(197,165,49,0.12); margin-top:2rem;
 }
 
-section[data-testid="stSidebar"] {
-    background: rgba(10,14,28,0.97) !important;
-    border-right: 1px solid rgba(197,165,49,0.2) !important;
-}
+section[data-testid="stSidebar"] { background: rgba(10,14,28,0.97) !important; border-right: 1px solid rgba(197,165,49,0.2) !important; }
 section[data-testid="stSidebar"] * { color: var(--text-primary) !important; }
-
 #MainMenu, footer, header { visibility: hidden; }
 .block-container { padding-top: 1rem !important; max-width: 860px !important; }
-
-/* ── Streamlit 자동 생성 빈 div 숨기기 ── */
-div[data-testid="stVerticalBlock"] > div:empty { display: none !important; }
 </style>
 """, unsafe_allow_html=True)
 
 
-# ──────────────────────────────────────────────────────────
-# 3. Secrets에서 불러오기
-# ──────────────────────────────────────────────────────────
+# ── Secrets ──
 api_key = st.secrets.get("OPENAI_API_KEY", "")
 access_password = st.secrets.get("ACCESS_PASSWORD", "")
 
-# ──────────────────────────────────────────────────────────
-# 4. 사이드바
-# ──────────────────────────────────────────────────────────
+# ── 사이드바 ──
 with st.sidebar:
     st.markdown("### ⚙️ 모델 설정")
     st.markdown(
@@ -289,9 +200,7 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-# ──────────────────────────────────────────────────────────
-# 5. 헤더
-# ──────────────────────────────────────────────────────────
+# ── 헤더 ──
 st.markdown("""
 <div class="sorting-header">
     <span class="hat-icon">🪄</span>
@@ -302,22 +211,14 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ──────────────────────────────────────────────────────────
-# 6. 비밀번호 인증
-# ──────────────────────────────────────────────────────────
+# ── 비밀번호 인증 ──
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
 
-    st.markdown("""
-    <div class="pw-card">
-        <p class="pw-card-title">🔐 입장 암호 입력</p>
-        <p class="pw-card-desc">KAIST IMMS 수업 참여자만 입장 가능합니다.</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown('<div class="pw-form-wrap">', unsafe_allow_html=True)
+    st.markdown("<p class='pw-title'>🔐 입장 암호 입력</p>", unsafe_allow_html=True)
+    st.markdown("<p class='pw-desc'>KAIST IMMS 수업 참여자만 입장 가능합니다.</p>", unsafe_allow_html=True)
 
     with st.form("pw_form"):
         pw_input = st.text_input(
@@ -328,12 +229,7 @@ if not st.session_state.authenticated:
         )
         btn = st.form_submit_button("✨ 입장하기", use_container_width=True)
 
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    st.markdown(
-        "<p class='pw-note'>🛡️ 비밀번호는 수업 담당자에게 문의하세요.</p>",
-        unsafe_allow_html=True,
-    )
+    st.markdown("<p class='pw-note'>🛡️ 비밀번호는 수업 담당자에게 문의하세요.</p>", unsafe_allow_html=True)
 
     if btn:
         if not pw_input:
@@ -347,44 +243,20 @@ if not st.session_state.authenticated:
     st.stop()
 
 
-# ──────────────────────────────────────────────────────────
-# 7. 메인 앱 (인증 통과 후)
-# ──────────────────────────────────────────────────────────
+# ── 메인 앱 (인증 통과 후) ──
 client = OpenAI(api_key=api_key)
 
-st.markdown("""
-<div class="magic-card">
-    <p class="card-title">🎩 당신의 이야기를 들려주세요</p>
-</div>
-""", unsafe_allow_html=True)
-
-st.markdown('<div class="magic-form-wrap">', unsafe_allow_html=True)
+st.markdown('<div class="main-card">', unsafe_allow_html=True)
+st.markdown('<p class="card-title">🎩 당신의 이야기를 들려주세요</p>', unsafe_allow_html=True)
 
 with st.form("sorting_form"):
     col1, col2 = st.columns(2)
     with col1:
-        career = st.text_input(
-            "💼 경력",
-            value="9년차 마케팅 기획자",
-            placeholder="예: 9년차 마케팅 기획자",
-        )
-        personality = st.text_input(
-            "⭐ 나를 표현하는 키워드",
-            value="패스트 러너, 엄청난 열정, 적용력",
-            placeholder="예: 패스트 러너, 열정, 적응력",
-        )
+        career = st.text_input("💼 경력", value="9년차 마케팅 기획자", placeholder="예: 9년차 마케팅 기획자")
+        personality = st.text_input("⭐ 나를 표현하는 키워드", value="패스트 러너, 엄청난 열정, 적용력", placeholder="예: 패스트 러너, 열정, 적응력")
     with col2:
-        strength = st.text_area(
-            "⚡ 강점 및 스킬",
-            value="PPT 시각화, 아이디어 기획, 파이썬 기초",
-            placeholder="예: PPT 시각화, 아이디어 기획, 파이썬 기초",
-            height=100,
-        )
-        goal = st.text_input(
-            "🎯 이번 수업의 목표",
-            value="AI를 비즈니스에 실제 적용하기",
-            placeholder="예: AI를 비즈니스에 실제 적용하기",
-        )
+        strength = st.text_area("⚡ 강점 및 스킬", value="PPT 시각화, 아이디어 기획, 파이썬 기초", placeholder="예: PPT 시각화, 아이디어 기획, 파이썬 기초", height=100)
+        goal = st.text_input("🎯 이번 수업의 목표", value="AI를 비즈니스에 실제 적용하기", placeholder="예: AI를 비즈니스에 실제 적용하기")
     submitted = st.form_submit_button("🪄 분류 모자 쓰기", use_container_width=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
@@ -438,9 +310,7 @@ if submitted:
                     max_tokens=1200,
                 )
                 result = response.choices[0].message.content
-
                 st.balloons()
-
                 st.markdown("""
 <div class="result-box">
     <div class="result-header">
@@ -449,9 +319,7 @@ if submitted:
     </div>
 </div>
 """, unsafe_allow_html=True)
-
                 st.markdown(result)
-
             except Exception as e:
                 err = str(e)
                 if "401" in err or "Unauthorized" in err or "Incorrect API key" in err:
@@ -464,12 +332,9 @@ if submitted:
                     st.error(f"⚠️ 오류가 발생했습니다: {e}")
 
 
-# ──────────────────────────────────────────────────────────
-# 8. 기숙사 안내 섹션
-# ──────────────────────────────────────────────────────────
+# ── 기숙사 안내 ──
 st.markdown('<hr class="gold-divider">', unsafe_allow_html=True)
 st.markdown('<p style="font-family:\'Cinzel\',serif;font-size:1.3rem;font-weight:700;color:#f5c518;text-align:center;letter-spacing:2px;margin-bottom:1rem;">⚡ 4개의 기숙사</p>', unsafe_allow_html=True)
-
 st.markdown("""
 <div class="houses-grid">
     <div class="house-card house-gryffindor">
@@ -503,10 +368,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-
-# ──────────────────────────────────────────────────────────
-# 9. 푸터
-# ──────────────────────────────────────────────────────────
+# ── 푸터 ──
 st.markdown("""
 <div class="site-footer">
     ✨ Generated by your AI-Driven Business Evolution Partner<br>
